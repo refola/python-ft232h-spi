@@ -218,12 +218,12 @@ verobug() {
 		echo "$1"
 	fi
 }
-# Print argument iff $VERBOSE
+# Fprint argument iff $VERBOSE
 # Usage: verbose "message"
 verbose() {
 	if "$VERBOSE"
 	then
-		echo "$1"
+		printf "%b" "$1"
 	fi
 }
 # Print argument iff $DEBUG
@@ -253,7 +253,7 @@ errf() {
 # Deobfuscates $DATA/thing
 # Usage: VAR="$(deobfuscate thing)"
 deobfuscate(){
-	"$DATA/obfus" de "$DATA/obfus.$1"
+	"$DATA/obfus" de "$1" "$2"
 }
 
 ####    UI    ####
@@ -285,15 +285,16 @@ usage() {
 }
 # Show support information
 support() {
-	echo "Please stand by while retrieving support information."
-	echo "Fetching:"
-	echo -n " * email address ... "
+	verbose "Please stand by while retrieving support information.\n"
+	verbose "Fetching:\n"
+	verbose " * email address ... "
 	email="$(deobfuscate "email" "10")"
-	echo "done."
-	echo -n " * bug report URL ... "
+	verbose "done.\n"
+	verbose " * bug report URL ... "
 	url="$(deobfuscate "bugreport" "10")"
-	echo "done."
-	echo "Tech support info retrieved. You have these options."
+	verbose "done.\n"
+	verbose "Tech support info retrieved."
+	echo "You can receive technical support via these options."
 	echo "1. File a GitHub ticket at $url."
 	echo "   This directly integrates with the project; it's super effective."
 	echo "   Please check if there's an open issue for your problem first."
