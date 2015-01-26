@@ -12,23 +12,24 @@ I mostly followed the directions on the Adafruit tutorial [here](https://learn.a
 Changes
 =======
 * Instead of using [Adafruit's code](https://github.com/adafruit/Adafruit_Python_GPIO) as-is, I'm using [this version](https://github.com/matthw/Adafruit_Python_GPIO) for Python3 support.
-* There's an additional patch at "data/FT232H.py.diff" to make an import statement work.
+* There's an additional patch at "data/FT232H.py.diff" to make an import statement in Python3 mode work.
 * Instead of the version that's automatically installed, I installed Python3-compatible py-spidev from [here](https://github.com/doceme/py-spidev).
 
 
 Installing
 ==========
 * Install the "Base Development" Pattern from Yast -> Software Management.
-* Run "do.sh deps-suse install 3"
+* Run `do.sh py_ver deps-suse install` where `py_ver` is either `py2` or `py3`
 
 
 Running
 =======
-Plug the device in and run "run.sh".
+Plug the device in and run `do.sh py_ver run` with the same `py_ver` as installed for.
 
 
-Bugs
-====
-* This doesn't actually detect the chip. (error 5 seconds after running run.sh)
+Known bugs
+==========
 * This only supports openSUSE.
+* Python3 mode: This doesn't actually detect the chip. (error 5 seconds after running run.sh)
+* Python2 mode: ImportError involving libftdi: refola/python-ft232h-spi#1
 
