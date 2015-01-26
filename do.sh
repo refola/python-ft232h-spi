@@ -119,16 +119,16 @@ installlibftdi() {
 install_Adafruit_Python_GPIO() {
 	# All the local variables
 	local agp="Adafruit_Python_GPIO"
+	if [[ "$V" == "3" ]]
+	then
+		local agpgit="https://github.com/matthw/$agp.git"
+	else
+		local agpgit="https://github.com/adafruit/$agp.git"
+	fi
 	local unpatched="$BUILD/$agp/Adafruit_GPIO/FT232H.py"
 	local patch="$DATA/FT232H.py.diff"
 	local spidev="py-spidev"
 	local spidevgit="https://github.com/doceme/$spidev"
-	if [[ "$V" == "3" ]]
-	then
-		local url="https://github.com/matthw/$agp.git"
-	else
-		local url="https://github.com/adafruit/Adafruit_Python_GPIO"
-	fi
 
 	# Move to right place
 	cd "$BUILD"
@@ -145,8 +145,8 @@ install_Adafruit_Python_GPIO() {
 	fi
 
 	#Download
-	echo "Retrieving the library that all these screens of output are ultimately for."
-	git clone "$url"
+	echo "Retrieving $agp."
+	git clone "$agpgit"
 
 	# Py3: Patch
 	if [[ "$V" == "3" ]]
@@ -179,7 +179,7 @@ instpystuff() {
 # Remove installed files except system packages
 clean() {
 	# Change Python version
-	local oldpy="$(getsetpylink)"
+	local oldpy="$(getsetpylink "python$V")"
 
 	echo "Removing installed Python packages."
 	sudo "pip$V" uninstall -y Adafruit-GPIO spidev
