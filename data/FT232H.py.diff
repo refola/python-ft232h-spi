@@ -1,0 +1,4 @@
+32c32
+< import GPIO
+---
+> import Adafruit_GPIO.GPIO as GPIO

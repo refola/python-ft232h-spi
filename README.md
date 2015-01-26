@@ -12,16 +12,23 @@ I mostly followed the directions on the Adafruit tutorial [here](https://learn.a
 Changes
 =======
 * Instead of using [Adafruit's code](https://github.com/adafruit/Adafruit_Python_GPIO) as-is, I'm using [this version](https://github.com/matthw/Adafruit_Python_GPIO) for Python3 support.
-* I installed Python3-compatible py-spidev from [here](https://github.com/doceme/py-spidev).
+* There's an additional patch at "data/FT232H.py.diff" to make an import statement work.
+* Instead of the version that's automatically installed, I installed Python3-compatible py-spidev from [here](https://github.com/doceme/py-spidev).
 
 
 Installing
 ==========
-Running the setup[123].sh scripts and following their directions seems to work right until 5 seconds after running "sudo python3 example.py".
+* Install the "Base Development" Pattern from Yast -> Software Management.
+* Run "do.sh deps-suse install 3"
+
+
+Running
+=======
+Plug the device in and run "run.sh".
 
 
 Bugs
 ====
-* This doesn't actually detect the chip.
+* This doesn't actually detect the chip. (error 5 seconds after running run.sh)
 * This only supports openSUSE.
 
