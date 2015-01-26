@@ -98,7 +98,8 @@ installlibftdi() {
 			errf " . "
 		done
 		rm "$ftar"
-		err "Deleted. Please try running the script again."
+		errf "Deleted. Please try running the script again.\n"
+		exit 1
 	fi
 	tar xf $ftar # "eXtract From"
 	echo "... Extracted."
@@ -242,13 +243,13 @@ param() {
 # Output error message and exit script
 # Usage: err "message"
 err() {
-	errf "$1\n"
+	errf "Error: $1\n"
 	exit 1
 }
 # Output printf'd error message and don't exit script
 # Usage: errf "message"
 errf() {
-	printf "Error: %b" "$1" > /dev/stderr
+	printf "%b" "$1" > /dev/stderr
 }
 # Deobfuscates $DATA/thing
 # Usage: VAR="$(deobfuscate thing)"
@@ -332,7 +333,7 @@ processinput() {
 		verbose)
 			VERBOSE="true";;
 		*)
-			errf "unknown arg $input\n"
+			errf "Error: unknown arg $input\n"
 			usage
 		esac
 	done
