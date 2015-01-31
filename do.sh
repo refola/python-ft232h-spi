@@ -1,6 +1,7 @@
-#/bin/bash
+#!/bin/bash
 # setup.sh
 # Automate the openSUSE, Python[3] installation of Adafruit_Python_GPIO....
+
 
 ####    INDEX    ####
 # index
@@ -8,6 +9,7 @@
 # text-processing
 # ui
 # other
+
 
 ####    SYSTEM    ####
 # Ensure right openSUSE packages are installed
@@ -34,10 +36,10 @@ buntudeps() {
 	local pkgs="build-essential libusb-1.0-0-dev swig cmake libconfuse-dev libboost-all-dev"
 	if [[ "$V" == "3" ]]
 	then
-		pkgs="$pkgs python3-dev"
+		pkgs="$pkgs python3-dev python3-pip"
 	elif [[ "$V" == "2" ]]
 	then
-		pkgs="$pkgs python-dev"
+		pkgs="$pkgs python-dev python-pip"
 	fi
 	debug "Package list: $pkgs"
 
@@ -66,6 +68,7 @@ setpylink() {
 	local target="$1"
 	if [ -h "$name" ]
 	then
+		debug "Changing python link: $name -> $target"
 		sudo rm "$name"
 		sudo ln -s "$target" "$name"
 	else
@@ -101,14 +104,14 @@ installlibftdi() {
 	cd "$BUILD"
 
 	# Acquire libftdi
-	echo "Downloading libftdi."
+	verbose "Downloading libftdi."
 	wget -c "$url"
-	echo -n "Calculating checksum.$pause"
+	verbosef "Calculating checksum.$pause"
 	if [[ "$(sha512sum "$ftar")" == "$csum" ]]
 	then
-		echo -n "... Passed. Now extracting.$pause"
+		verbosef "... Passed. Now extracting.$pause"
 	else
-		echo "Failed."
+		verbose "Failed."
 		errf "Deleting file \"$ftar\" in $seconds seconds."
 		for (( i=0; i<seconds; i++))
 		do
@@ -120,18 +123,18 @@ installlibftdi() {
 		exit 1
 	fi
 	tar xf $ftar # "eXtract From"
-	echo "... Extracted."
+	verbose "... Extracted."
 
 	# Keep things tidy.
 	mkdir "$fbuild"
 	cd "$fbuild"
 
 	# Now for the actual build and install.
-	echo "Configuring build."
+	verbose "Configuring libftdi build."
 	cmake -DCMAKE_INSTALL_PREFIX="/usr/" ../
-	echo "Compiling...."
+	verbose "Compiling libftdi...."
 	make
-	echo "Installing...."
+	echo "Installing libftdi...."
 	sudo make install
 }
 # Install Adafruit's Python GPIO library
@@ -155,7 +158,7 @@ install_Adafruit_Python_GPIO() {
 	# Py3: Custom py-spidev
 	if [[ "$V" == "3" ]]
 	then
-		echo "Getting spidev."
+		verbose "Getting spidev."
 		git clone "$spidevgit"
 		cd "$BUILD/$spidev"
 		echo "Installing py-spidev."
@@ -164,13 +167,13 @@ install_Adafruit_Python_GPIO() {
 	fi
 
 	#Download
-	echo "Retrieving $agp."
+	verbose "Retrieving $agp."
 	git clone "$agpgit"
 
 	# Py3: Patch
 	if [[ "$V" == "3" ]]
 	then
-		echo "Patching $unpatched."
+		verbose "Patching $unpatched."
 		patch "$unpatched" "$patch"
 	fi
 
@@ -193,7 +196,7 @@ instpystuff() {
 	setpylink "$oldpy"
 
 	# Directions
-	echo "Install complete!"
+	echo "Install complete! Use \"do.sh py$V run\" to run example code."
 }
 # Remove installed files except system packages
 clean() {
@@ -209,6 +212,7 @@ clean() {
 	sudo rm $(sudo make install | grep 'Up-to-date' | cut -c16-)
 
 	echo "Removing build directory."
+	debug "\$BUILD = $BUILD"
 	sudo rm -rf "$BUILD"
 
 	# Restore python version
@@ -220,13 +224,14 @@ run() {
 	sudo "python$V" "$DATA/example.py"
 }
 
+
 ####    TEXT-PROCESSING    ####
 # Print argument iff $DEBUG && $VERBOSE
 # Usage: verbug "message"
 verbug() {
 	if "$VERBOSE" && "$DEBUG"
 	then
-		echo "$1"
+		errn "$1"
 	fi
 }
 # Print argument iff $DEBUG || $VERBOSE
@@ -234,15 +239,23 @@ verbug() {
 verobug() {
 	if "$VERBOSE" || "$DEBUG"
 	then
-		echo "$1"
+		errn "$1"
 	fi
 }
-# Fprint argument iff $VERBOSE
+# Print argument iff $VERBOSE
 # Usage: verbose "message"
 verbose() {
 	if "$VERBOSE"
 	then
-		printf "%b" "$1"
+		errn "$1"
+	fi
+}
+# Fprint argument iff $VERBOSE
+# Usage: verbosef "message"
+verbose() {
+	if "$VERBOSE"
+	then
+		errf "$1"
 	fi
 }
 # Print argument iff $DEBUG
@@ -250,7 +263,7 @@ verbose() {
 debug() {
 	if "$DEBUG"
 	then
-		echo "$1"
+		errn "$1"
 	fi
 }
 # Print single parameter for usage function
@@ -261,8 +274,13 @@ param() {
 # Output error message and exit script
 # Usage: err "message"
 err() {
-	errf "Error: $1\n"
+	errn "Error: $1"
 	exit 1
+}
+# Output message to /dev/stderr with newline and don't exit script
+# Usage: errn "message"
+errn() {
+	errf "$1\n"
 }
 # Output printf'd error message and don't exit script
 # Usage: errf "message"
@@ -270,10 +288,11 @@ errf() {
 	printf "%b" "$1" > /dev/stderr
 }
 # Deobfuscates $DATA/thing
-# Usage: VAR="$(deobfuscate thing)"
+# Usage: VAR="$(deobfuscate "thing")"
 deobfuscate(){
 	"$DATA/obfus" de "$1" "$2"
 }
+
 
 ####    UI    ####
 # Run usage() if no input given
@@ -359,6 +378,7 @@ processinput() {
 		esac
 	done
 }
+
 
 ####    OTHER    ####
 # Set global default and noninteractive variables
