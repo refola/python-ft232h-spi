@@ -12,9 +12,9 @@
 ####    SYSTEM    ####
 # Ensure right openSUSE packages are installed
 susedeps() {
-	# Set variables
+	# Set variable
 	local pkgs="libusb-1_0-devel swig cmake libconfuse-devel boost-devel"
-	if [[ "$V" == 3 ]]
+	if [[ "$V" == "3" ]]
 	then
 		pkgs="$pkgs python3-devel"
 	elif [[ "$V" == "2" ]]
@@ -28,6 +28,24 @@ susedeps() {
 	sudo zypper up
 	echo "Installing dependencies."
 	sudo zypper in $pkgs
+}
+buntudeps() {
+	# Set variable
+	local pkgs="build-essential libusb-1.0-0-dev swig cmake libconfuse-dev libboost-all-dev"
+	if [[ "$V" == "3" ]]
+	then
+		pkgs="$pkgs python3-dev"
+	elif [[ "$V" == "2" ]]
+	then
+		pkgs="$pkgs python-dev"
+	fi
+	debug "Package list: $pkgs"
+
+	# Update and install
+	echo "Updating repositories."
+	sudo apt-get update
+	echo "Installing dependencies."
+	sudo apt-get install $pkgs
 }
 # Output what "python" command points to
 # NOTE: Outputs "." if python command is not link
@@ -273,7 +291,8 @@ usage() {
 	echo "Does stuff involving Adafruit_Python_GPIO on Linux."
 	echo "Args"
 	param "debug"		"Show debugging information"
-	param "deps-suse"	"Install openSUSE 13.2 dependencies"
+	param "deps-buntu"	"Install *buntu dependencies"
+	param "deps-suse"	"Install openSUSE dependencies"
 	param "help"		"Show this help message and exit"
 	param "install"		"Install Adafruit_Python_GPIO"
 	param "py2"		"Use Python version 2"
@@ -314,6 +333,8 @@ processinput() {
 		case "$input" in
 		debug)
 			DEBUG="true";;
+		deps-buntu)
+			RUNDEPS="buntudeps";;
 		deps-suse)
 			RUNDEPS="susedeps";;
 		help)
