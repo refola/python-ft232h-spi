@@ -1,6 +1,8 @@
 #!/bin/bash
-# setup.sh
-# Automate the openSUSE, Python[3] installation of Adafruit_Python_GPIO....
+# do.sh
+# Automate the openSUSE/*buntu, Python 2/3 installation of Adafruit_Python_GPIO....
+#
+# NOTE: This script is now unsupported, but the repository will remain available at https://github.com/refola/python-ft232h-spi for the foreseeable future. It's public domain, so do whatever you want.
 
 
 ####    INDEX    ####
@@ -287,11 +289,6 @@ errn() {
 errf() {
 	printf "%b" "$1" > /dev/stderr
 }
-# Deobfuscates $DATA/thing
-# Usage: VAR="$(deobfuscate "thing")"
-deobfuscate(){
-	"$DATA/obfus" de "$1" "$2"
-}
 
 
 ####    UI    ####
@@ -318,29 +315,7 @@ usage() {
 	param "py3"		"Use Python version 3 (default)."
 	param "run"		"Run example code"
 	param "remove"		"Remove everything but dependencies"
-	param "support"		"Show tech support info and exit"
 	param "verbose"		"More text"
-	exit 1
-}
-# Show support information
-support() {
-	verbose "Please stand by while retrieving support information.\n"
-	verbose "Fetching:\n"
-	verbose " * email address ... "
-	email="$(deobfuscate "email" "10")"
-	verbose "done.\n"
-	verbose " * bug report URL ... "
-	url="$(deobfuscate "bugreport" "10")"
-	verbose "done.\n"
-	verbose "Tech support info retrieved."
-	echo "You can receive technical support via these options."
-	echo "1. File a GitHub ticket at $url."
-	echo "   This directly integrates with the project; it's super effective."
-	echo "   Please check if there's an open issue for your problem first."
-	echo "2. Email a developer at $email. This directly notifies"
-	echo "   a developer and doesn't need you to make a new account, but"
-	echo "   no one will know about the bug report until a developer manually"
-	echo "   enters it."
 	exit 1
 }
 # Define global variable representing user's commands
@@ -368,8 +343,6 @@ processinput() {
 			RUNRUN="run";;
 		remove)
 			RUNREMOVE="clean";;
-		support)
-			RUNSUPPORT="support";;
 		verbose)
 			VERBOSE="true";;
 		*)
@@ -398,10 +371,6 @@ runcommands() {
 	if [ ! -z "$RUNHELP" ] # Help - priority 1 - cancels all else
 	then
 		$RUNHELP
-	fi
-	if [ ! -z "$RUNSUPPORT" ] # Support info - also cancels the below
-	then
-		$RUNSUPPORT
 	fi
 	if [ ! -z "$RUNDEPS" ] # Dependencies - before other externalities
 	then
