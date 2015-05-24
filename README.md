@@ -1,6 +1,8 @@
 # python-ft232h-spi
 Setup dependencies and send SPI data via FT232H connected to USB.
 
+**NOTE**: As of the end of January 2015, this script either does not work or fails to correctly workaround upstream issues. Since that time, I no longer have access to the hardware that this script was meant to help me set up and have left the associated project, so **I am stopping development**. That said, if you think this script may be still useful to you, feel free to (ab)use it to your heart's content; it's public domain. Also, I'd gladly link to an updated fork or similar-purpose project on request.
+
 
 About
 =====
