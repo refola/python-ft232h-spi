@@ -33,12 +33,14 @@ Known bugs
 
 In openSUSE 13.2, Python3 mode:
 * This doesn't actually detect the chip. (error ~5 seconds after running run.sh)
+
 In openSUSE 13.2, Python2 mode:
 * ImportError involving libftdi: refola/python-ft232h-spi#1
 
 In Kubuntu 14.04, Python3 mode:
 * Error: "Could NOT find PythonLibs (missing:  PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS)" when building libftdi, followed by "Not building python bindings"
 * Running results in "ImportError: No module named 'ftdi1'"
+
 In Kubuntu 14.04, Python2 mode:
 * Same as in Python3 mode, plus this:
 * "spidev_module.c:20:20: fatal error: Python.h: No such file or directory"
